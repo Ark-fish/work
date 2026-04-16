@@ -1,0 +1,769 @@
+/* ===== 全局重置 & 主背景纯白 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', '华文楷体', 'KaiTi', sans-serif;
+    background-color: #ffffff;
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 16px;
+    position: relative;
+}
+
+/* ----- 主视框：淡灰色磨砂 + 圆角 75% ----- */
+.game-container {
+    position: relative;
+    width: 75vw;
+    height: 75vh;
+    max-width: 1400px;
+    min-width: 320px;
+    background: rgba(235, 230, 220, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-radius: 42px;
+    box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(220, 200, 180, 0.3);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 22px 28px;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+    z-index: 5;
+}
+
+.game-container::-webkit-scrollbar {
+    width: 8px;
+}
+.game-container::-webkit-scrollbar-track {
+    background: rgba(200, 190, 180, 0.2);
+    border-radius: 20px;
+}
+.game-container::-webkit-scrollbar-thumb {
+    background: rgba(150, 120, 90, 0.4);
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+}
+
+/* ---------- 左上角返回首页链接 ---------- */
+.home-link {
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(235, 220, 200, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 8px 18px;
+    border-radius: 40px;
+    color: #4a3220;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(180, 140, 100, 0.4);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+}
+
+.home-link:hover {
+    background: #dbbc9b;
+    border-color: #8b5e2e;
+    color: #1f140a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -6px #7a5a3a;
+}
+
+/* ---------- 右上角切换商队状态按钮（竖向窄高，贴角设计） ---------- */
+.toggle-status-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 54px;
+    background: rgba(200, 170, 140, 0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid #b2926a;
+    border-top: none;
+    border-right: none;
+    border-bottom-left-radius: 30px;
+    padding: 16px 4px;
+    color: #2e1f12;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    line-height: 1.2;
+}
+
+.toggle-status-btn span {
+    display: block;
+    text-align: center;
+}
+
+.toggle-status-btn:hover {
+    background: #dbbc9b;
+    border-color: #8b5e2e;
+    color: #1f140a;
+    box-shadow: 0 6px 14px -4px #7a5a3a;
+}
+
+/* ---------- 左侧统计面板 (纯文字，无框) ---------- */
+.stats-sidebar {
+    position: absolute;
+    left: 90px;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 10;
+    color: #2c1e12;
+}
+
+.stat-item {
+    display: flex;
+    align-items: baseline;
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    position: relative;
+    line-height: 1.4;
+}
+
+.stat-label {
+    font-weight: 600;
+    color: #4a3522;
+    text-shadow: 0 1px 2px rgba(255,255,240,0.8);
+    letter-spacing: 0.5px;
+    margin-right: 70px;
+}
+
+.stat-value {
+    font-size: 1.35em;
+    font-weight: 700;
+    color: #7b4f2b;
+    text-shadow: 0 1px 6px rgba(180,120,50,0.3);
+    opacity: 0;
+    position: relative;
+    left: -69px;
+    transition: opacity 0.2s ease, left 0.2s ease;
+    margin-left: 0;
+    pointer-events: none;
+}
+
+.stat-item:hover .stat-value,
+.stat-item.locked .stat-value {
+    opacity: 1;
+    left: 0;
+}
+
+.stat-item.locked .stat-label {
+    color: #5c3a1e;
+    text-shadow: 0 0 6px rgba(200,150,80,0.5);
+}
+
+/* ---------- 主内容区域 (为左侧面板留出空间) ---------- */
+.game-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    margin-left: 350px;
+    margin-right: 0;
+    padding-right: 10px;
+    min-width: 0;
+}
+
+/* 开始界面 */
+.game-start {
+    background: rgba(250, 245, 235, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 28px 30px;
+    border-radius: 32px;
+    border: 1px solid rgba(200, 170, 140, 0.3);
+    margin-top: 6px;
+    color: #2f241a;
+}
+
+.game-start h2 {
+    color: #5c3e28;
+    margin-bottom: 18px;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 6px rgba(180,140,90,0.15);
+}
+
+.game-start p {
+    font-size: 1.2em;
+    margin-bottom: 28px;
+    line-height: 1.6;
+    color: #2f241a;
+}
+
+.protection-options h3 {
+    color: #6b4a2c;
+    margin-bottom: 18px;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option-btn {
+    background: rgba(235, 215, 185, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1.5px solid #b2926a;
+    color: #2e1f12;
+    padding: 16px 18px;
+    border-radius: 48px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: left;
+}
+
+.option-btn:hover {
+    background: #dbbc9b;
+    border-color: #8b5e2e;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 18px -8px rgba(100, 60, 20, 0.25);
+}
+
+.option-btn.selected {
+    background: #c9a87c;
+    border: 2.5px solid #6f3f14;
+    color: #1f140a;
+    box-shadow: 0 0 0 2px rgba(210,160,100,0.4);
+}
+
+.start-btn {
+    background: #7b5a3e;
+    color: #fdf3e0;
+    border: none;
+    padding: 20px 48px;
+    border-radius: 60px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 12px auto 0;
+    transition: all 0.25s;
+    box-shadow: 0 10px 20px -5px rgba(80, 50, 20, 0.3);
+    border: 1px solid #b3926a;
+    letter-spacing: 2px;
+}
+
+.start-btn:hover {
+    background: #9f7b58;
+    transform: scale(1.02);
+    box-shadow: 0 15px 25px -8px #6b4f32;
+}
+
+/* 游戏进行区域 —— 使用相对定位，以便底部固定元素定位 */
+.game-play {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+    flex: 1;
+    height: 100%;
+}
+/* 上方图画框 —— 背景图可通过 JS 动态切换 */
+.event-card {
+    display: block;
+    background-color: rgba(250, 242, 230, 0.3);
+    background-image: url('../img/otherbackground.jpg'); /* 默认背景 */
+    background-size: cover;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 28px 26px;
+    border-radius: 36px;
+    border: 1.5px solid rgba(160, 120, 70, 0.3);
+    box-shadow: 0 15px 25px -10px rgba(70, 40, 10, 0.15);
+    color: #2e241b;
+    height: 50%;
+    min-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    pointer-events: none;
+    position: relative;
+}
+
+/* 底部固定事件描述区域 —— 高度 85% */
+.event-footer {
+    position: absolute;
+    bottom: 50px;
+    left: -30%;
+    width: 130%;
+    height: 30%;                   /* 改为 85% */
+    min-width: 280px;
+    background: rgba(250, 242, 230, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 32px;
+    border: 1.5px solid rgba(160, 120, 70, 0.3);
+    box-shadow: 0 10px 20px -8px rgba(70, 40, 10, 0.2);
+    padding: 20px 30px;
+    color: #2e241b;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+    overflow: hidden;
+    text-align: left;
+}
+
+/* 文字区域容器 */
+.footer-text {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    min-width: 0;
+}
+
+.event-footer h3 {
+    color: #583e26;
+    margin: 0;
+    font-size: 2.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.event-footer p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1.8rem;
+    color: #2e241b;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* 确保事件容器有足够高度 */
+.event-container {
+    padding-bottom: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.event-container h2 {
+    color: #4a3522;
+    margin-bottom: 18px;
+    font-weight: 500;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+/* 选项容器 —— 位于底部事件框右侧 */
+/* 选项容器 —— 位于底部事件框右侧，宽 30%，高 85% */
+.event-options {
+    width: 30%;
+    height: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    padding-right: 8px;
+    pointer-events: auto;
+    z-index: 15;
+    background: transparent;
+}
+
+/* 选项按钮整体缩小至 85% */
+.event-option {
+    background: rgba(215, 185, 150, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1.5px solid #ac8b66;
+    color: #1f140c;
+    padding: 12px 17px;            /* 原 14px 20px，按比例微调 */
+    border-radius: 48px;
+    font-size: 0.89em;             /* 原 1.05em，缩小约15% */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+    flex-shrink: 0;
+    transform: scale(0.85);        /* 整体缩放，保持点击区域 */
+    transform-origin: left center; /* 从左侧缩放，避免偏移 */
+    width: calc(100% / 0.85);      /* 补偿宽度，使实际占据宽度不变 */
+    margin-bottom: 2px;            /* 补偿缩放带来的间距变化 */
+}
+
+/* 保持悬停效果不受缩放影响（由于缩放，悬停区域会等比缩小，但仍在可接受范围） */
+.event-option:hover {
+    background: #c8aa88;
+    border-color: #7a5a3a;
+    transform: scale(0.85) translateX(6px); /* 结合缩放和平移 */
+    box-shadow: 0 8px 12px -6px #836b4e;
+}
+
+.event-option:disabled {
+    opacity: 0.45;
+    background: #c0b2a2;
+    border-color: #9e8b78;
+    transform: scale(0.85);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* 小屏幕下对底部事件框的微调 */
+@media (max-width: 900px) {
+    .event-footer {
+        width: 90%;
+        left: 5%;
+        height: 80%;               /* 小屏可略减，防止溢出 */
+        bottom: 30px;
+        gap: 15px;
+        padding: 16px 20px;
+    }
+    .footer-text {
+        gap: 15px;
+    }
+    .event-footer h3 {
+        font-size: 2.2rem;
+    }
+    .event-footer p {
+        font-size: 1.4rem;
+    }
+    .event-options {
+        width: 35%;
+        height: 85%;
+        gap: 8px;
+    }
+    .event-card {
+        min-height: 60px;
+    }
+    .event-option {
+        transform: scale(0.8);
+        width: calc(100% / 0.8);
+    }
+    .event-option:hover {
+        transform: scale(0.8) translateX(4px);
+    }
+}
+
+/* 结束界面 */
+.game-end {
+    text-align: center;
+    background: rgba(245, 235, 220, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 42px;
+    padding: 32px 28px;
+    border: 1px solid #cbb295;
+    margin-top: 10px;
+    color: #2a1d12;
+}
+
+.game-end h2 {
+    color: #4f321b;
+    margin-bottom: 24px;
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 6px;
+}
+
+.end-stats {
+    background: rgba(235, 220, 200, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 32px 30px;
+    border-radius: 48px;
+    border: 1px solid #b69872;
+    margin-bottom: 30px;
+    display: inline-block;
+    box-shadow: 0 12px 20px -12px #624a32;
+}
+
+.end-stats p {
+    font-size: 1.25em;
+    margin: 12px 0;
+    color: #2a1d12;
+}
+
+.restart-btn {
+    background: #6b4f36;
+    color: #f5ede1;
+    border: none;
+    padding: 18px 42px;
+    border-radius: 60px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 16px -6px #3d2e1e;
+    border: 1px solid #bea07e;
+}
+
+.restart-btn:hover {
+    background: #8f6e50;
+    transform: scale(1.02);
+}
+
+/* ---------- 商队状态面板（外置，可拖拽/缩放，初始隐藏） ---------- */
+.player-status-outer {
+    position: fixed;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 336px;
+    max-width: 90vw;
+    background: rgba(240, 230, 215, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 29px 26px;
+    border-radius: 38px;
+    border: 1.8px solid rgba(170, 135, 90, 0.3);
+    box-shadow: inset 0 2.4px 9.6px rgba(255,255,240,0.6), 0 9.6px 21.6px -9.6px rgba(60,40,20,0.15);
+    color: #2c1e12;
+    z-index: 15;
+    font-size: 1.14rem;
+    user-select: none;
+    transition: none;
+    cursor: default;
+}
+
+.player-status-outer h3 {
+    color: #4f351f;
+    margin-bottom: 26px;
+    text-align: center;
+    font-size: 2.16rem;
+    font-weight: 500;
+    border-bottom: 2.4px dashed #b1977a;
+    padding-bottom: 14px;
+}
+
+.player-status-outer .status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 7px;
+    border-bottom: 1.2px solid rgba(150, 120, 80, 0.25);
+    font-size: 1.32rem;
+    color: #2c1e12;
+}
+
+.player-status-outer .status-item:last-child {
+    border-bottom: none;
+}
+
+/* 右下角全局重置按钮 */
+.global-reset-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(120, 80, 50, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid #c8a87c;
+    color: #f5ede1;
+    padding: 12px 24px;
+    border-radius: 48px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    z-index: 1000;
+    border: 1px solid #bea07e;
+    letter-spacing: 2px;
+}
+
+.global-reset-btn:hover {
+    background: #a88564;
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px -6px #3e2c1a;
+}
+
+/* ===== 响应式调整 ===== */
+@media (max-width: 1100px) {
+    .stats-sidebar {
+        left: 30px;
+        top: 50px;
+    }
+    .game-main {
+        margin-left: 260px;
+    }
+    .player-status-outer {
+        right: 20px;
+        width: 300px;
+    }
+    .home-link {
+        top: 12px;
+        left: 16px;
+        padding: 6px 14px;
+        font-size: 1rem;
+    }
+    .toggle-status-btn {
+        padding: 8px 6px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .game-container {
+        width: 90vw;
+        height: 85vh;
+        padding: 18px 16px;
+    }
+    .stats-sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 20px;
+        gap: 24px;
+    }
+    .game-main {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .player-status-outer {
+        position: static;
+        width: 100%;
+        margin-top: 20px;
+        transform: none;
+    }
+    .game-play {
+        flex-direction: column;
+    }
+    .global-reset-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 18px;
+        font-size: 1rem;
+    }
+
+    .game-start {
+        padding-right: 75px;
+    }
+    .toggle-status-btn {
+        top: 8px;
+        right: 8px;
+        width: 50px;
+        padding: 14px 2px;
+        font-size: 1.2rem;
+    }
+    .home-link {
+        top: 8px;
+        left: 12px;
+    }
+
+    .event-container {
+        padding-bottom: 180px;
+    }
+}
+
+@media (max-width: 600px) {
+    .stat-item {
+        font-size: 1rem;
+    }
+    .player-status-outer {
+        padding: 20px 16px;
+    }
+    .game-start h2 {
+        font-size: 1.8rem;
+    }
+    .home-link {
+        top: 10px;
+        left: 12px;
+        padding: 5px 12px;
+    }
+}
+
+/* 普通事件图片（靠右浮动，无装饰） */
+.event-image {
+    display: block;
+    float: right;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    object-fit: contain;
+}
+
+.event-card img {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 50%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.event-card img.event-cover {
+    top: 0;
+    left: 0;
+    right: auto;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    border-radius: 36px;
+    z-index: 10;
+}
+
+img {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    pointer-events: none;
+}

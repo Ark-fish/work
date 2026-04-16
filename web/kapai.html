@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>丝路粟尚：唐韵西行</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "SimHei", sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: url(img/background.jpg) center center / cover no-repeat fixed;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 全屏流动小星星 */
+        .star {
+            position: fixed;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.85;
+            z-index: 0;
+            pointer-events: none;
+            animation: starDrift linear infinite;
+        }
+
+        @keyframes starDrift {
+            0% { transform: translate(0, 0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100vw, 0); opacity: 0; }
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            padding-bottom: 100px;
+        }
+
+        .side-nav {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            width: 120px;
+            height: 50px;
+            background: linear-gradient(90deg, #1a1a2e, #16213e);
+            border: 2px solid #c8a96e;
+            font-size: 18px;
+            font-weight: bold;
+            color: #f0e6d2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%);
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(90deg, #d4b88a, #c8a96e);
+            color: #0a2a3a;
+            transform: translateX(5px);
+            box-shadow: 0 6px 12px rgba(200, 169, 110, 0.4);
+        }
+
+        /* 右侧导航栏样式 (与左侧完全一致，仅位置不同) */
+        .right-nav {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        /* 游戏试玩按钮 —— 完全复刻 .nav-item 视觉风格 */
+        .game-try-btn {
+            width: 120px;
+            height: 50px;
+            background: linear-gradient(90deg, #1a1a2e, #16213e);
+            border: 2px solid #c8a96e;
+            font-size: 18px;
+            font-weight: bold;
+            color: #f0e6d2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%);
+        }
+
+        /* 右侧按钮悬停效果：向左移动（与左侧向右移动形成对称） */
+        .game-try-btn:hover {
+            background: linear-gradient(90deg, #d4b88a, #c8a96e);
+            color: #0a2a3a;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 12px rgba(200, 169, 110, 0.4);
+        }
+
+        /* 首页区域：完全垂直居中 */
+        #home {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .title-text {
+            font-size: 64px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #f0e68c, #d4af37, #c8a96e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 4px 15px rgba(0,0,0,0.8);
+            letter-spacing: 4px;
+        }
+
+        .game-section {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(10, 10, 25, 0.85);
+            border: 2px solid #c8a96e;
+            border-radius: 12px;
+            padding: 45px;
+            margin: 220px 0;
+            text-align: center;
+            scroll-margin-top: 50px;
+        }
+
+        .game-section h2 {
+            font-size: 34px;
+            color: #ffd700;
+            margin-bottom: 30px;
+        }
+
+        .game-section p {
+            font-size: 18px;
+            line-height: 1.9;
+            color: #e0d8c0;
+            margin-bottom: 15px;
+        }
+
+        /* 详情按钮 */
+        .detail-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #d4af37, #c8a96e);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0a2a3a;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .detail-btn:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        /* 子菜单 */
+        .sub-menu {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .sub-item {
+            padding: 10px 20px;
+            background: #1a1a2e;
+            border: 2px solid #c8a96e;
+            border-radius: 6px;
+            color: #f0e6d2;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .sub-item:hover {
+            background: #c8a96e;
+            color: #0a2a3a;
+        }
+
+        /* 悬浮弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            width: 90%;
+            max-width: 700px;
+            background: #111827;
+            border: 3px solid #c8a96e;
+            border-radius: 15px;
+            padding: 50px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+        .modal-box h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: #c8a96e;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .hide {
+            display: none;
+        }
+
+        /* 游戏介绍模块整体下移一个标准窗口高度 (1080px) */
+        #intro {
+            margin: 220px 0;
+            margin-top: 1300px;  /* 220px + 1080px = 1300px，精准下移 */
+        }
+
+        /* 兼容移动端 */
+        @media (max-width: 768px) {
+            .right-nav {
+                right: 5px;
+            }
+            .game-try-btn {
+                width: 100px;
+                font-size: 14px;
+                height: 44px;
+            }
+            .side-nav .nav-item {
+                width: 100px;
+                font-size: 14px;
+                height: 44px;
+            }
+            .title-text {
+                font-size: 42px;
+            }
+            #intro {
+                margin-top: 1100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 全屏覆盖弹窗 -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div class="game-container">
+    <!-- 左侧导航栏：只保留首页和游戏介绍（卡牌库已删除） -->
+    <div class="side-nav">
+        <div class="nav-item" data-target="home">首页</div>
+        <div class="nav-item" data-target="intro">游戏介绍</div>
+    </div>
+
+    <!-- 右侧导航栏：游戏试玩按钮，跳转根目录 index.html -->
+    <div class="right-nav">
+        <div class="game-try-btn" id="gamePlayBtn">游戏试玩</div>
+    </div>
+
+    <!-- 首页标题区：视口垂直居中 -->
+    <div id="home">
+        <h1 class="title-text">丝路粟尚：唐韵西行</h1>
+    </div>
+
+    <!-- 游戏介绍（已整体下移一个标准窗口高度） -->
+    <div id="intro" class="game-section">
+        <h2>🐪 游戏介绍</h2>
+        <p>《丝路粟尚：唐韵西行》以盛唐丝绸之路为背景，玩家将扮演粟特商人，穿越沙漠戈壁，与西域各国进行贸易，书写属于你的丝路传奇。</p>
+        <p>招募商队伙伴、管理货物资源、完成城邦任务、遭遇随机事件，从一名小商人成长为丝绸之路的传奇巨贾。</p>
+        
+        <button class="detail-btn" onclick="showSubMenu()">查看详细介绍</button>
+        <div id="subMenu" class="sub-menu hide">
+            <div class="sub-item" onclick="openModal('info')">游戏介绍</div>
+            <div class="sub-item" onclick="openModal('role')">游戏角色</div>
+            <div class="sub-item" onclick="openModal('story')">游戏主线</div>
+            <div class="sub-item" onclick="openModal('rule')">游戏规则</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 弹窗内容数据
+    const contentData = {
+        info: {
+            title: "📜 游戏介绍",
+            text: "游戏以丝绸之路文化为核心，融合贸易、冒险、卡牌策略，带你沉浸式体验盛唐西域的商贸传奇。"
+        },
+        role: {
+            title: "👤 游戏角色",
+            text: "粟特商人、护卫、向导、翻译、工匠等多种角色，各自拥有专属技能与背景故事。"
+        },
+        story: {
+            title: "🗺️ 游戏主线",
+            text: "从长安出发，穿越河西走廊、沙漠戈壁，与数十个城邦交互，最终成为丝路第一商人。"
+        },
+        rule: {
+            title: "📏 游戏规则",
+            text: "通过卡牌组合完成贸易、应对随机事件、管理商队状态，合理规划路线与资源获取胜利。"
+        }
+    };
+
+    // 创建流动星星背景
+    function createStars() {
+        for (let i = 0; i < 160; i++) {
+            let s = document.createElement("div");
+            s.classList.add("star");
+            let size = Math.random() * 2.5 + 1;
+            s.style.width = size + "px";
+            s.style.height = size + "px";
+            s.style.left = Math.random() * 100 + "vw";
+            s.style.top = Math.random() * 100 + "px";
+            s.style.animationDuration = (Math.random() * 12 + 8) + "s";
+            s.style.animationDelay = Math.random() * 12 + "s";
+            document.body.appendChild(s);
+        }
+    }
+    createStars();
+
+    // 显示详细介绍子菜单
+    function showSubMenu() {
+        const sub = document.getElementById('subMenu');
+        if (sub) sub.classList.remove('hide');
+    }
+
+    // 打开弹窗
+    function openModal(type) {
+        const data = contentData[type];
+        if (!data) return;
+        document.getElementById("modalContent").innerHTML = `
+            <h2>${data.title}</h2>
+            <p style="font-size:18px;line-height:2;">${data.text}</p>
+        `;
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    // 页面加载完成后的初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        // 左侧导航平滑滚动 (首页 & 游戏介绍)
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.getAttribute('data-target');
+                if (targetId) {
+                    const targetEl = document.getElementById(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: "smooth" });
+                    }
+                }
+            });
+        });
+
+        // 游戏试玩按钮跳转逻辑：跳转到根目录下的 index.html
+        const playBtn = document.getElementById('gamePlayBtn');
+        if (playBtn) {
+            playBtn.addEventListener('click', function(e) {
+                window.location.href = 'index.html';
+            });
+        }
+    });
+</script>
+</body>
+</html>

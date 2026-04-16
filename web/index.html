@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>丝路粟商 · 唐韵西行</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <!-- 主视框容器 -->
+    <div class="game-container">
+        <!-- 左上角返回首页链接 -->
+        <a href="kapai.html" class="home-link" title="返回首页">🏠 返回首页</a>
+
+        <!-- 右上角商队状态切换按钮（文字竖排，圆弧） -->
+        <button class="toggle-status-btn" id="toggleStatusBtn" title="显示/隐藏商队状态">
+            <span>商</span><span>队</span><span>状</span><span>态</span>
+        </button>
+
+        <!-- 左侧固定统计面板 -->
+        <div class="stats-sidebar">
+            <div class="stat-item locked" data-stat="prestige">
+                <span class="stat-label">威望值：</span>
+                <span class="stat-value" id="prestige">30</span>
+            </div>
+            <div class="stat-item locked" data-stat="day">
+                <span class="stat-label">当前天数：</span>
+                <span class="stat-value" id="day">1</span>
+            </div>
+            <div class="stat-item locked" data-stat="stage">
+                <span class="stat-label">行程阶段：</span>
+                <span class="stat-value" id="stage">初段</span>
+            </div>
+            <div class="stat-item locked" data-stat="protection">
+                <span class="stat-label">保护期：</span>
+                <span class="stat-value" id="protection">0</span>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <main class="game-main">
+            <!-- 开始界面 -->
+            <section class="game-start" id="gameStart">
+                <h2>🏮 商途启程 🏮</h2>
+                <p>你是粟特商队少主，继承父亲的威望，开始大唐境内短途丝路行商。</p>
+                <div class="protection-options">
+                    <h3>选择保护期缴费档位：</h3>
+                    <div class="option-group">
+                        <button class="option-btn" data-stage="1">近郊保护（12天）- 10贯</button>
+                        <button class="option-btn" data-stage="2">边塞保护（24天）- 18贯</button>
+                        <button class="option-btn" data-stage="3">河西保护（36天）- 26贯</button>
+                        <button class="option-btn" data-stage="all">全程保护（72天）- 43贯（8折）</button>
+                    </div>
+                </div>
+                <button class="start-btn" id="startBtn">启程 · 西行</button>
+            </section>
+            
+            <!-- 游戏主界面 -->
+            <section class="game-play" id="gamePlay" style="display: none;">
+                <div class="event-container" id="eventContainer">
+                    <h2>🖼️ 丝路画卷</h2>
+                    <!-- 上方图画框（背景图 otherbackground.jpg，事件图片动态插入） -->
+                    <div class="event-card" id="eventCard">
+                        <!-- 图片由 JavaScript 动态生成，此处无需预置内容 -->
+                    </div>
+                </div>
+                <!-- 底部固定事件描述区域（包含左侧标题描述 + 右侧选项按钮） -->
+                <div class="event-footer" id="eventFooter">
+                    <div class="footer-text">
+                        <h3 id="eventFooterTitle">事件标题</h3>
+                        <p id="eventFooterDesc">事件描述</p>
+                    </div>
+                    <!-- 选项按钮将动态插入此处 -->
+                    <div class="event-options" id="eventOptions"></div>
+                </div>
+            </section>
+            
+            <!-- 结束界面 -->
+            <section class="game-end" id="gameEnd" style="display: none;">
+                <h2>🏁 行程结束</h2>
+                <div class="end-stats">
+                    <p>总天数：<span id="totalDays">90</span></p>
+                    <p>最终威望：<span id="finalPrestige">100</span></p>
+                    <p>最终金币：<span id="finalGold">500</span></p>
+                    <p>商队规模：<span id="finalCaravan">5骆驼, 2护卫, 3人手</span></p>
+                    <p>收集线索：<span id="finalClues">0</span></p>
+                </div>
+                <button class="restart-btn" id="restartBtn">重新开始</button>
+            </section>
+        </main>
+    </div><!-- .game-container 结束 -->
+
+    <!-- 商队状态面板 —— 外部固定，初始隐藏，支持拖拽缩放 -->
+    <div class="player-status-outer" id="playerStatusOuter" style="display: none;">
+        <h3>🐫 商队状态</h3>
+        <div class="status-item"><span>骆驼：</span><span id="camels">3</span></div>
+        <div class="status-item"><span>护卫：</span><span id="guards">0</span></div>
+        <div class="status-item"><span>人手：</span><span id="workers">3</span></div>
+        <div class="status-item"><span>货物：</span><span id="goods">丝绸 x10, 茶叶 x8, 粮草 x15</span></div>
+        <div class="status-item"><span>钱财：</span><span id="gold">20贯</span></div>
+    </div>
+
+    <!-- 右下角重置按钮 -->
+    <button class="global-reset-btn" id="globalResetBtn" title="重置游戏">⟲ 重置</button>
+
+    <script src="js/index.js"></script>
+</body>
+</html>
